@@ -24,22 +24,31 @@
   between Ar (mr x kc) and Br (kc x nr) proportionally to the ratio nr/mr to estimate kc
 **/
 
-int model_level(int NL, int CL, int WL, int dataSize, int m, int n) { 
+int model_level(int isL3, int NL, int CL, int WL, int dataSize, int m, int n) { 
 
   
   int k, CAr, CBr;
 
   if (WL==2) {
-     k = NL * CL / (2.0 * m * dataSize);
+     if (!isL3)
+       k = NL * CL / (2.0 * m * dataSize);
+     else  
+       k = NL * CL / (2.0 * n * dataSize);
   } else {
      CAr = floor( ( (float)WL - 1.0 ) / (1.0 + (float)n / (float)m) ); //Lines of each set for Ar 
      if (CAr==0) { // Special case
        CAr = 1.0;
        CBr = WL - 2;
-       k = CBr * NL * CL / (n * dataSize);
+       if (!isL3)
+         k = CBr * NL * CL / (n * dataSize);
+       else   
+         k = CBr * NL * CL / (m * dataSize);
      } else {
        CBr = ceil( ( (float)n / (float)m ) * (float)CAr ); //Lines of each set for Br
-       k = CAr * NL * CL / (m * dataSize);
+       if (!isL3)
+         k = CAr * NL * CL / (m * dataSize);
+       else
+         k = CBr * NL * CL / (n * dataSize);
      }
   }
 
@@ -49,10 +58,11 @@ int model_level(int NL, int CL, int WL, int dataSize, int m, int n) {
 
 void get_optim_mc_nc_kc(int dataSize, int m, int n, int k, int mr, int nr, int *mc, int *nc, int *kc) {
   
-  *kc = model_level(NL1, CL1, WL1, dataSize, mr, nr); *kc = floor(*kc);
+  *kc = model_level(0, NL1, CL1, WL1, dataSize, mr, nr); *kc = floor(*kc);
   *kc = min(k, *kc);
-  *mc = model_level(NL2, CL2, WL2, dataSize, *kc, nr); *mc = floor(*mc);
+  *mc = model_level(0, NL2, CL2, WL2, dataSize, *kc, nr); *mc = floor(*mc);
   *mc = min(m, *mc);
-  *nc = model_level(NL3, CL3, WL3, dataSize, *kc, *mc); *nc = floor(*nc);
-
+  *nc = model_level(1, NL3, CL3, WL3, dataSize, *kc, *mc); *nc = floor(*nc);
+  *nc = min(n, *nc);
 }
+

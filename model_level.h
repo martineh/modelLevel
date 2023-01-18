@@ -5,11 +5,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "archs/amd_zen.h"
+//#include "archs/amd_zen.h"
+#include "archs/arm_carmel.h"
 
 #define min(a,b)     ( (a) > (b) ? (b) : (a) )
 
-int model_level(int NL, int CL, int WL, int dataSize, int m, int n);
+int model_level(int isL3, int NL, int CL, int WL, int dataSize, int m, int n);
 void get_optim_mc_nc_kc(int dataSize, int m, int n, int k, int mr, int nr, int *mc, int *nc, int *kc);
 
 #endif
