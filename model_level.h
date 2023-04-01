@@ -5,8 +5,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//#include "archs/amd_zen.h"
-#include "archs/arm_carmel.h"
+#ifdef ARMv8
+  #include "archs/arm_carmel.h"
+#else
+  #include "archs/amd_zen.h"
+#endif
 
 #define min(a,b)     ( (a) > (b) ? (b) : (a) )
 
